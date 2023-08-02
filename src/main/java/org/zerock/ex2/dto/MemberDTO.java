@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class MemberDTO extends User implements OAuth2User {
 
     public MemberDTO(String email, String pw, String nickname, boolean social, List<String> roleNames){
 
-        super(email,pw, roleNames.stream().map(str -> new SimpleGrantedAuthority(str)).collect(Collectors.toList()));
+        super(email,pw, roleNames.stream().map(str -> new SimpleGrantedAuthority("ROLE_" + str)).collect(Collectors.toList()));
 
         this.email = email;
         this.pw = pw;
@@ -44,13 +45,15 @@ public class MemberDTO extends User implements OAuth2User {
 
     public Map<String, Object> getClaims() {
 
-        return Map.of(
-                "email", email,
-                "pw", pw,
-                "nickname", nickname,
-                "social", social,
-                "roleNames", roleNames);
+        Map<String, Object> map = new HashMap<>();
 
+        map.put("email",email);
+        map.put("pw",pw);
+        map.put("nickname",nickname);
+        map.put("social",social);
+        map.put("roleNames",roleNames);
+
+        return map;
 
     }
 
